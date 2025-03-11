@@ -1,5 +1,6 @@
 - name: Frontend Setup
   hosts: all
+  become: yes
   tasks:
     - name: Installing Nginx
       ansible.builtin.dnf:
@@ -13,8 +14,8 @@
 
     - name: Removing Old Nginx content
       ansible.builtin.file:
-          path: /usr/share/nginx/html
-          state: absent
+        path: /usr/share/nginx/html
+        state: absent
 
     - name: Download frontend Code and Extract it
       ansible.builtin.unarchive:
