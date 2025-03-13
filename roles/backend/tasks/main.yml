@@ -1,8 +1,10 @@
 - name: verify Nodejs
   ansible.builtin.shell: type npm
   register: npm
-  ignore_errors: yes
 
+- name: read npm
+  ansible.builtin.debug:
+    msg: "{{npm}}"
 - name: Install NodeJS
   ansible.builtin.shell: curl -sL https://rpm.nodesource.com/setup_lts.x | bash
   when: npm.rc != 0
@@ -10,7 +12,6 @@
 - name: Install NodeJS
   ansible.builtin.dnf:
     name: nodejs
-  when: npm.rc != 0
 - name: Copy Backend Service File
   ansible.builtin.copy:
     src: backend.service
@@ -18,10 +19,10 @@
 - name: Add application user
   ansible.builtin.user:
     name: expense
--name: Include App Pre-requisites
- ansible.builtin.import_role:
-    name: common
-    tasks_from: app_prereq
+- name: Include App Pre-requisites
+  ansible.builtin.import_role:
+      name: common
+      tasks_from: app_prereq
 - name: Install NodeJS dependencies
   ansible.builtin.shell: npm install
   args:
